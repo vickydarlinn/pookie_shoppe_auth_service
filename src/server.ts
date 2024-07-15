@@ -1,4 +1,4 @@
-function login(userName: string): number {
+function login(userName: string): string {
   return userName;
 }
 
