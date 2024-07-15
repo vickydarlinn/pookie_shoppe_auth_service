@@ -8,7 +8,8 @@
     "format:check": "npx prettier . --check",
     "format:fix": "npx prettier . --write",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "vickydarlinn",
@@ -20,8 +21,16 @@
     "@types/node": "^20.14.10",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
     "prettier": "3.3.2",
     "typescript": "^5.5.3",
     "typescript-eslint": "^7.16.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint:fix",
+      "npm run format:fix"
+    ]
   }
 }
