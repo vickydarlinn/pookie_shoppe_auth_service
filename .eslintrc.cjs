@@ -18,4 +18,5 @@ module.exports = {
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
   },
+  ignorePatterns: ["dist", ".eslintrc.cjs"],
 };
