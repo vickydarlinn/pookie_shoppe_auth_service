@@ -1,4 +1,4 @@
-function login(userName: String): Boolean {
+function login(userName: string): boolean {
   return true;
 }
 
