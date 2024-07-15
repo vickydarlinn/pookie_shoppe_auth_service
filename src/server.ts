@@ -1,5 +1,4 @@
-function login(userName: string): string {
-  return userName;
-}
+// import { Config } from "./config";
 
-login("apple");
+// console.log("port " + Config.PORT);
+// console.log(Config.NODE_ENV);
