@@ -11,4 +11,15 @@ describe("POST /auth/register", () => {
     const response = await request(app).post("/auth/register").send(userData);
     expect(response.statusCode).toBe(201);
   });
+  it("should return valid response", async () => {
+    const userData = {
+      name: "vicky",
+      email: "vickysangwan@gmail.com",
+      password: "secretPass",
+    };
+    const response = await request(app).post("/auth/register").send(userData);
+    expect(response.header["content-type"]).toEqual(
+      expect.stringContaining("json"),
+    );
+  });
 });
