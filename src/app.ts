@@ -3,12 +3,15 @@ import { NextFunction, Request, Response } from "express";
 
 import { HttpError } from "http-errors";
 import logger from "./config/logger";
+import authRouter from "./routes/auth";
 
 const app = express();
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+app.use("/auth", authRouter);
+
 app.get("/test", (req, res, next) => {
   try {
     throw new Error("my testing error");
