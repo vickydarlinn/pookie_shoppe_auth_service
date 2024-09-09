@@ -1,6 +1,5 @@
-import express from "express";
-import { NextFunction, Request, Response } from "express";
-
+import "reflect-metadata";
+import express, { NextFunction, Request, Response } from "express";
 import { HttpError } from "http-errors";
 import logger from "./config/logger";
 import authRouter from "./routes/auth";
