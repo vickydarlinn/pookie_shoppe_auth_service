@@ -2,8 +2,9 @@ import { DataSource } from "typeorm";
 import app from "../../src/app";
 import request from "supertest";
 import { AppDataSource } from "../../src/config/data-source";
-import { truncateTables } from "../utils";
+// import { truncateTables } from "../utils";
 import { User } from "../../src/entity/User";
+import { Roles } from "../../src/constants";
 
 describe("POST /auth/register", () => {
   let connection: DataSource;
@@ -15,7 +16,10 @@ describe("POST /auth/register", () => {
   beforeEach(async () => {
     // Database truncate
     // we will clear the whole db so that it will not effect other tests
-    await truncateTables(connection);
+    // await truncateTables(connection);
+
+    await connection.dropDatabase();
+    await connection.synchronize();
   });
 
   afterAll(async () => {
@@ -81,5 +85,24 @@ describe("POST /auth/register", () => {
     const response = await request(app).post("/auth/register").send(userData);
     // Assert
     expect(response.body.id).toBeDefined();
+  });
+
+  it("should assign customer role", async () => {
+    // Arrange
+    const userData = {
+      firstName: "vicky",
+      lastName: "sangwan",
+      email: "uttapalsangwan@gmail.com",
+      password: "secret",
+    };
+    // Act
+    await request(app).post("/auth/register").send(userData);
+
+    // Assert
+    const userRepository = connection.getRepository(User);
+    const users = await userRepository.find();
+
+    expect(users[0]).toHaveProperty("role");
+    expect(users[0].role).toBe(Roles.CUSTOMER);
   });
 });
