@@ -68,4 +68,18 @@ describe("POST /auth/register", () => {
     expect(users[0].lastName).toBe(userData.lastName);
     expect(users[0].email).toBe(userData.email);
   });
+  it("should return user id", async () => {
+    // Arrange
+    const userData = {
+      firstName: "vicky",
+      lastName: "sangwan",
+      email: "uttapalsangwan@gmail.com",
+      password: "secret",
+    };
+    // Act
+    // const response = await request(app).post("/auth/register").send(userData);
+    const response = await request(app).post("/auth/register").send(userData);
+    // Assert
+    expect(response.body.id).toBeDefined();
+  });
 });
