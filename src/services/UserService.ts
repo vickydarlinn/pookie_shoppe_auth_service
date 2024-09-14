@@ -8,25 +8,24 @@ import bcrypt from "bcrypt";
 export class UserService {
   constructor(private userRepository: Repository<User>) {}
   async create({ firstName, lastName, email, password }: UserData) {
-    try {
-      // const userRepository = AppDataSource.getRepository(User);
+    // const userRepository = AppDataSource.getRepository(User);
+    // checking email is this exist in db or not?
+    const isUserAlreadyExist = await this.userRepository.findOne({
+      where: { email: email },
+    });
 
-      // hash the password
-      const saltRound = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRound);
-      return await this.userRepository.save({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        role: Roles.CUSTOMER,
-      });
-    } catch (err) {
-      const error = createHttpError(
-        500,
-        "Failed to store the data in the database",
-      );
-      throw error;
+    if (isUserAlreadyExist) {
+      throw createHttpError(400, "Email is already exists!");
     }
+    // hash the password
+    const saltRound = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRound);
+    return await this.userRepository.save({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      role: Roles.CUSTOMER,
+    });
   }
 }
