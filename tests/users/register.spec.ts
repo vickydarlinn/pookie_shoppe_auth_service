@@ -146,7 +146,19 @@ describe("POST /auth/register", () => {
     });
   });
   describe("fields are missing", () => {
-    it.todo("should return 400 status code if email is missing");
+    it("should return 400 status code if email is missing", async () => {
+      // Arrange
+      const userData = {
+        firstName: "vicky",
+        lastName: "sangwan",
+        email: "",
+        password: "secret",
+      };
+      //Act
+      const response = await request(app).post("/auth/register").send(userData);
+      // Asset
+      expect(response.statusCode).toBe(400);
+    });
     it.todo("should return 400 status code if firstName is missing");
     it.todo("should return 400 status code if lastName is missing");
     it.todo("should return 400 status code if password is missing");
