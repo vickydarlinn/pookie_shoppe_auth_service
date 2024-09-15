@@ -143,6 +143,41 @@ describe("POST /auth/register", () => {
       expect(response.statusCode).toBe(400);
       expect(users.length).toBe(1);
     });
+    it("should return the access token and refresh token in cookie", async () => {
+      // Arrange
+      const userData = {
+        firstName: "vicky",
+        lastName: "sangwan",
+        email: "uttapalsangwan@gmail.com",
+        password: "secret",
+      };
+
+      // Act
+      const response = await request(app).post("/auth/register").send(userData);
+
+      // Assert
+      let cookies = response.headers["set-cookie"] as string | string[];
+      console.log(cookies);
+
+      // If set-cookie is a string, wrap it in an array
+      if (!Array.isArray(cookies)) {
+        cookies = [cookies];
+      }
+
+      expect(cookies).toBeDefined();
+      expect(cookies.length).toBeGreaterThan(0);
+      const accessTokenCookie = cookies.find((cookie) =>
+        cookie.includes("accessToken"),
+      );
+      const refreshTokenCookie = cookies.find((cookie) =>
+        cookie.includes("refreshToken"),
+      );
+
+      // Assert that both cookies exist
+      expect(accessTokenCookie).toBeDefined();
+      expect(refreshTokenCookie).toBeDefined();
+    });
+    it.todo("should store the refresh token in database");
   });
   describe("fields are missing", () => {
     it("should return 400 status code if email is missing", async () => {
