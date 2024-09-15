@@ -5,6 +5,7 @@ import { AppDataSource } from "../../src/config/data-source";
 // import { truncateTables } from "../utils";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
+import { RefreshToken } from "../../src/entity/RefreshToken";
 
 describe("POST /auth/register", () => {
   let connection: DataSource;
@@ -157,7 +158,6 @@ describe("POST /auth/register", () => {
 
       // Assert
       let cookies = response.headers["set-cookie"] as string | string[];
-      console.log(cookies);
 
       // If set-cookie is a string, wrap it in an array
       if (!Array.isArray(cookies)) {
@@ -177,7 +177,30 @@ describe("POST /auth/register", () => {
       expect(accessTokenCookie).toBeDefined();
       expect(refreshTokenCookie).toBeDefined();
     });
-    it.todo("should store the refresh token in database");
+    it("should store the refresh token in database and associate it with the user", async () => {
+      // Arrange
+      const userData = {
+        firstName: "vicky",
+        lastName: "sangwan",
+        email: "uttapalsangwan@gmail.com",
+        password: "secret",
+      };
+
+      // Act
+      const response = await request(app).post("/auth/register").send(userData);
+
+      //  Assert
+      const refreshTokenRepo = connection.getRepository(RefreshToken);
+
+      const tokens = await refreshTokenRepo
+        .createQueryBuilder("refreshToken")
+        .where("refreshToken.userId = :userId", {
+          userId: (response.body as Record<string, string>).id,
+        })
+        .getMany();
+
+      expect(tokens).toHaveLength(1);
+    });
   });
   describe("fields are missing", () => {
     it("should return 400 status code if email is missing", async () => {
