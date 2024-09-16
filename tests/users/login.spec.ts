@@ -4,6 +4,8 @@ import request from "supertest";
 import { AppDataSource } from "../../src/config/data-source";
 import { User } from "../../src/entity/User";
 import { RefreshToken } from "../../src/entity/RefreshToken";
+import bcrypt from "bcrypt";
+import { Roles } from "../../src/constants";
 
 describe("POST /auth/login", () => {
   let connection: DataSource;
@@ -29,7 +31,15 @@ describe("POST /auth/login", () => {
         firstName: "vicky",
         lastName: "sangwan",
       };
-      await request(app).post("/auth/register").send(userData);
+
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({
+        ...userData,
+        password: hashedPassword,
+        role: Roles.CUSTOMER,
+      });
+
       const loginData = {
         email: "uttapalsangwan@gmail.com",
         password: "secret",
@@ -62,7 +72,13 @@ describe("POST /auth/login", () => {
         firstName: "vicky",
         lastName: "sangwan",
       };
-      await request(app).post("/auth/register").send(userData);
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({
+        ...userData,
+        password: hashedPassword,
+        role: Roles.CUSTOMER,
+      });
       const loginData = {
         email: "uttapalsangwan@gmail.com",
         password: "secret",
@@ -80,7 +96,14 @@ describe("POST /auth/login", () => {
         firstName: "vicky",
         lastName: "sangwan",
       };
-      await request(app).post("/auth/register").send(userData);
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({
+        ...userData,
+        password: hashedPassword,
+        role: Roles.CUSTOMER,
+      });
+
       const loginData = {
         email: "uttapalsangwan@gmail.com",
         password: "secret",
@@ -118,7 +141,13 @@ describe("POST /auth/login", () => {
         firstName: "vicky",
         lastName: "sangwan",
       };
-      await request(app).post("/auth/register").send(userData);
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({
+        ...userData,
+        password: hashedPassword,
+        role: Roles.CUSTOMER,
+      });
 
       const loginData = {
         email: " uttapalsangwan@gmail.com ",
@@ -137,7 +166,7 @@ describe("POST /auth/login", () => {
         })
         .getMany();
 
-      expect(tokens.length).toBeGreaterThan(0);
+      expect(tokens).toHaveLength(1);
     });
   });
   describe("fields are missing", () => {
@@ -180,7 +209,13 @@ describe("POST /auth/login", () => {
         firstName: "vicky",
         lastName: "sangwan",
       };
-      await request(app).post("/auth/register").send(userData);
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const userRepository = connection.getRepository(User);
+      await userRepository.save({
+        ...userData,
+        password: hashedPassword,
+        role: Roles.CUSTOMER,
+      });
 
       const loginData = {
         email: " uttapalsangwan@gmail.com ",
@@ -189,7 +224,7 @@ describe("POST /auth/login", () => {
       //Act
       await request(app).post("/auth/login").send(loginData);
       // Asset
-      const userRepository = connection.getRepository(User);
+
       const users = await userRepository.find();
       const user = users[0];
       expect(user.email).toBe("uttapalsangwan@gmail.com");
