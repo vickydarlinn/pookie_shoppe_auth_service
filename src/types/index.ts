@@ -26,8 +26,9 @@ export type AuthCookie = {
 };
 
 export interface AuthRequest extends Request {
-  auth: {
-    id: string;
-    role: string;
-  };
+  auth: IPayload;
 }
+export type IPayload = {
+  id: string;
+  role: string;
+};

@@ -14,6 +14,7 @@ import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
 import { CredentialService } from "../services/CredentialService";
 import { authenticate } from "../middlewares/authenticate";
+import { validateRefreshToken } from "../middlewares/validateRefreshToken";
 
 const router = Router();
 
@@ -42,6 +43,12 @@ router.get(
   "/self",
   authenticate as RequestHandler,
   authController.self as unknown as RequestHandler,
+);
+
+router.post(
+  "/refresh",
+  validateRefreshToken as RequestHandler,
+  authController.refresh as unknown as RequestHandler,
 );
 
 export default router;
