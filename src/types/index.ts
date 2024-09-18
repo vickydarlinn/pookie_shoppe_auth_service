@@ -18,3 +18,8 @@ export interface LoginData {
 export interface LoginUserRequest extends Request {
   body: LoginData;
 }
+
+export type AuthCookie = {
+  accessToken: string;
+  refreshToken: string;
+};

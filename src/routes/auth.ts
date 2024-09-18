@@ -13,6 +13,7 @@ import { UserService } from "../services/UserService";
 import { RefreshToken } from "../entity/RefreshToken";
 import { User } from "../entity/User";
 import { CredentialService } from "../services/CredentialService";
+import { authenticate } from "../middlewares/authenticate";
 
 const router = Router();
 
@@ -36,5 +37,11 @@ router.post(
 );
 
 router.post("/login", loginValidator, authController.login as RequestHandler);
+
+router.get(
+  "/self",
+  authenticate as RequestHandler,
+  authController.self as RequestHandler,
+);
 
 export default router;

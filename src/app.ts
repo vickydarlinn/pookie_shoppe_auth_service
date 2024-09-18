@@ -3,11 +3,15 @@ import express, { NextFunction, Request, Response } from "express";
 import { HttpError } from "http-errors";
 import logger from "./config/logger";
 import authRouter from "./routes/auth";
+import path from "path";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, "../public")));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -24,7 +28,7 @@ app.get("/test", (req, res, next) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   let message = "Internal server error";
-  const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || err.status || 500;
 
   if (statusCode === 400) {
     message = err.message;

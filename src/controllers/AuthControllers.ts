@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import { LoginUserRequest, RegisterUserRequest } from "../types";
 import { UserService } from "../services/UserService";
 import { Logger } from "winston";
@@ -149,5 +149,12 @@ export class AuthController {
     } catch (error) {
       next(error);
     }
+  };
+
+  self = async (req: Request, res: Response) => {
+    // Log headers and cookies for debugging
+
+    // If you need to check the token manually
+    return res.status(200).json({});
   };
 }
