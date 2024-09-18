@@ -157,6 +157,9 @@ export class AuthController {
 
   self = async (req: AuthRequest, res: Response) => {
     const userData = await this.userService.findById(Number(req.auth.id));
-    return res.status(200).json(userData);
+    return res.status(200).json({
+      ...userData,
+      password: undefined,
+    });
   };
 }

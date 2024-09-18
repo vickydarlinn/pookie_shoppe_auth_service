@@ -50,9 +50,9 @@ describe("GET /auth/self", () => {
       // Arrange
       // Register user
       const userData = {
-        firstName: "Rakesh",
-        lastName: "K",
-        email: "rakesh@mern.space",
+        firstName: "vicky",
+        lastName: "sangwan",
+        email: "uttapalsangwan@gmail.com",
         password: "password",
       };
       const userRepository = connection.getRepository(User);
@@ -76,6 +76,37 @@ describe("GET /auth/self", () => {
 
       // Assert
       expect(response.body.id).toBe(data.id);
+    });
+    it("should not return user's password field", async () => {
+      // Arrange
+      // Register user
+      const userData = {
+        firstName: "vicky",
+        lastName: "sangwan",
+        email: "uttapalsangwan@gmail.com",
+        password: "password",
+      };
+      const userRepository = connection.getRepository(User);
+      const data = await userRepository.save({
+        ...userData,
+        role: Roles.CUSTOMER,
+      });
+
+      // Generate token
+      const accessToken = jwks.token({
+        id: String(data.id),
+        role: data.role,
+      });
+
+      // Add token to cookie
+      // Act
+      const response = await request(app)
+        .get("/auth/self")
+        .set("Cookie", [`accessToken=${accessToken};`])
+        .send();
+
+      // Assert
+      expect(response.body).not.toHaveProperty("password");
     });
   });
 });
