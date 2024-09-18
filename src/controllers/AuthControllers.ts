@@ -1,5 +1,5 @@
-import { NextFunction, Response, Request } from "express";
-import { LoginUserRequest, RegisterUserRequest } from "../types";
+import { NextFunction, Response } from "express";
+import { AuthRequest, LoginUserRequest, RegisterUserRequest } from "../types";
 import { UserService } from "../services/UserService";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { TokenService } from "../services/TokenService";
 import { CredentialService } from "../services/CredentialService";
 import createHttpError from "http-errors";
+import { Roles } from "../constants";
 
 export class AuthController {
   // userService: UserService;
@@ -44,11 +45,13 @@ export class AuthController {
         lastName,
         email,
         password,
+        role: Roles.CUSTOMER,
       });
       this.logger.info("New user created Successfully", { newUser });
 
       const payload: JwtPayload = {
         id: String(newUser.id),
+        role: newUser.role,
       };
       // make accessToken
       const accessToken = this.tokenService.generateAccessToken(payload);
@@ -117,6 +120,7 @@ export class AuthController {
 
       const payload: JwtPayload = {
         id: String(user.id),
+        role: user.role,
       };
       // make accessToken
       const accessToken = this.tokenService.generateAccessToken(payload);
@@ -151,10 +155,8 @@ export class AuthController {
     }
   };
 
-  self = async (req: Request, res: Response) => {
-    // Log headers and cookies for debugging
-
-    // If you need to check the token manually
-    return res.status(200).json({});
+  self = async (req: AuthRequest, res: Response) => {
+    const userData = await this.userService.findById(Number(req.auth.id));
+    return res.status(200).json(userData);
   };
 }

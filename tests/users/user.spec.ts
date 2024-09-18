@@ -3,6 +3,8 @@ import app from "../../src/app";
 import request from "supertest";
 import { AppDataSource } from "../../src/config/data-source";
 import createJWKSMock from "mock-jwks";
+import { User } from "../../src/entity/User";
+import { Roles } from "../../src/constants";
 
 describe("GET /auth/self", () => {
   let connection: DataSource;
@@ -30,7 +32,6 @@ describe("GET /auth/self", () => {
       const accessToken = jwks.token({
         id: "1",
       });
-      console.log(accessToken);
       const response = await request(app)
         .get("/auth/self")
         .set("Cookie", [`accessToken=${accessToken}`])
@@ -44,6 +45,37 @@ describe("GET /auth/self", () => {
       const response = await request(app).get("/auth/self");
       // Assert
       expect(response.statusCode).toBe(401);
+    });
+    it("should return user data", async () => {
+      // Arrange
+      // Register user
+      const userData = {
+        firstName: "Rakesh",
+        lastName: "K",
+        email: "rakesh@mern.space",
+        password: "password",
+      };
+      const userRepository = connection.getRepository(User);
+      const data = await userRepository.save({
+        ...userData,
+        role: Roles.CUSTOMER,
+      });
+
+      // Generate token
+      const accessToken = jwks.token({
+        id: String(data.id),
+        role: data.role,
+      });
+
+      // Add token to cookie
+      // Act
+      const response = await request(app)
+        .get("/auth/self")
+        .set("Cookie", [`accessToken=${accessToken};`])
+        .send();
+
+      // Assert
+      expect(response.body.id).toBe(data.id);
     });
   });
 });

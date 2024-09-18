@@ -41,7 +41,7 @@ router.post("/login", loginValidator, authController.login as RequestHandler);
 router.get(
   "/self",
   authenticate as RequestHandler,
-  authController.self as RequestHandler,
+  authController.self as unknown as RequestHandler,
 );
 
 export default router;

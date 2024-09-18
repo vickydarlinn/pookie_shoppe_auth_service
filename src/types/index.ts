@@ -5,6 +5,7 @@ export interface UserData {
   lastName: string;
   email: string;
   password: string;
+  role: string;
 }
 
 export interface RegisterUserRequest extends Request {
@@ -23,3 +24,10 @@ export type AuthCookie = {
   accessToken: string;
   refreshToken: string;
 };
+
+export interface AuthRequest extends Request {
+  auth: {
+    id: string;
+    role: string;
+  };
+}
