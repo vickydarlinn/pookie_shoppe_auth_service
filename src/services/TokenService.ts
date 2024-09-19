@@ -40,4 +40,11 @@ export class TokenService {
     });
     return refreshTokenRecord;
   }
+
+  async destroyRefreshToken(id: number) {
+    const deletedToken = await this.refreshTokenRepository.delete({
+      id,
+    });
+    return deletedToken;
+  }
 }

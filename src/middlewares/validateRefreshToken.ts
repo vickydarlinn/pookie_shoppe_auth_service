@@ -5,7 +5,6 @@ import { AuthCookie } from "../types";
 import { AppDataSource } from "../config/data-source";
 import { RefreshToken } from "../entity/RefreshToken";
 import { JwtPayload } from "jsonwebtoken";
-import { IPayload } from "../types";
 import logger from "../config/logger";
 
 // Extract the token from the request
@@ -23,20 +22,19 @@ const isRevokedCallback = async (
       return true;
     }
 
-    const payload = token.payload as IPayload; // Safely cast the payload to IPayload
+    const payload = token.payload as JwtPayload; // Safely cast the payload to IPayload
     const refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
     const refreshToken = await refreshTokenRepository.findOne({
       where: {
-        id: Number(payload.id),
+        id: Number(payload.tokenId),
         user: { id: Number(payload.id) }, // Assuming the RefreshToken entity has a relation with a user entity
       },
     });
-
     // If the token does not exist in the database, it's revoked
     return refreshToken === null;
   } catch (error) {
     logger.error("Error while getting the refresh token", {
-      id: (token?.payload as IPayload)?.id, // Log the ID if available
+      id: (token?.payload as JwtPayload)?.id, // Log the ID if available
     });
   }
 

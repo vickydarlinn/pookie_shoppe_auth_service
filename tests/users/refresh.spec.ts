@@ -89,54 +89,17 @@ describe("POST /auth/refresh", () => {
 
     expect(response.statusCode).toBe(200);
   });
-  // it("should return 401 if refresh token is invalid", async () => {
-  //   // Arrange
-  //   const invalidToken = "invalid-refresh-token";
+  it("should return 401 if refresh token is invalid", async () => {
+    // Arrange
+    const invalidToken = "invalid-refresh-token";
 
-  //   // Act
-  //   const response = await request(app)
-  //     .post("/auth/refresh")
-  //     .set("Cookie", [`refreshToken=${invalidToken}`])
-  //     .send();
+    // Act
+    const response = await request(app)
+      .post("/auth/refresh")
+      .set("Cookie", [`refreshToken=${invalidToken}`])
+      .send();
 
-  //   // Assert
-  //   expect(response.statusCode).toBe(401);
-  // });
-
-  // it("should return 403 if refresh token is expired", async () => {
-  //   // Arrange
-  //   const expiredToken = jwks.token({
-  //     id: "1",
-  //     exp: Math.floor(Date.now() / 1000) - 3600, // set token to be expired
-  //   });
-
-  //   // Act
-  //   const response = await request(app)
-  //     .post("/auth/refresh")
-  //     .set("Cookie", [`refreshToken=${expiredToken}`])
-  //     .send();
-
-  //   // Assert
-  //   expect(response.statusCode).toBe(403);
-  // });
-
-  // it("should return 404 if refresh token is not found in the database", async () => {
-  //   // Arrange
-  //   const notInDatabaseToken = jwks.token({ id: "999" }); // token with non-existing user id
-
-  //   // Act
-  //   const response = await request(app)
-  //     .post("/auth/refresh")
-  //     .set("Cookie", [`refreshToken=${notInDatabaseToken}`])
-  //     .send();
-
-  //   // Assert
-  //   expect(response.statusCode).toBe(404);
-  // });
-
-  // it("should revoke old refresh token after generating a new one", async () => {
-  //   // Simulate a refresh token revocation test here
-  // });
-
-  // Additional tests for simultaneous requests, proper HTTP headers, etc.
+    // Assert
+    expect(response.statusCode).toBe(401);
+  });
 });

@@ -156,15 +156,62 @@ export class AuthController {
   };
 
   self = async (req: AuthRequest, res: Response) => {
-    const userData = await this.userService.findById(Number(req.auth.id));
+    const userData = await this.userService.findById(
+      Number((req.auth as JwtPayload).id),
+    );
     return res.status(200).json({
       ...userData,
       password: undefined,
     });
   };
 
-  refresh = async (req: Request, res: Response, next: NextFunction) => {
+  refresh = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
+      const payload: JwtPayload = {
+        id: (req.auth as JwtPayload).id,
+        role: (req.auth as JwtPayload).role,
+      };
+
+      // get user data
+      const userData = await this.userService.findById(
+        Number((req.auth as JwtPayload).id),
+      );
+      if (!userData) {
+        const error = createHttpError(
+          400,
+          "User with the token could not find",
+        );
+        next(error);
+        return;
+      }
+      // delete old refresh token from db
+      await this.tokenService.destroyRefreshToken(
+        Number((req.auth as JwtPayload).tokenId),
+      );
+      // make a new record of refreshToken in db
+      const refreshTokenRecord =
+        await this.tokenService.persistRefreshToken(userData);
+      // make new refresh token
+      const refreshToken = this.tokenService.generateRefreshToken({
+        ...payload,
+        tokenId: refreshTokenRecord.id,
+      });
+      // create accesstoken
+      const accessToken = this.tokenService.generateAccessToken(payload);
+      // set cookies
+      res.cookie("accessToken", accessToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60, // 1h
+        httpOnly: true,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        domain: "localhost",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24 * 365, // 1y
+        httpOnly: true,
+      });
+
       return res.status(200).json();
     } catch (error) {
       next(error);
