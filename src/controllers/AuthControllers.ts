@@ -156,9 +156,7 @@ export class AuthController {
   };
 
   self = async (req: AuthRequest, res: Response) => {
-    const userData = await this.userService.findById(
-      Number((req.auth as JwtPayload).id),
-    );
+    const userData = await this.userService.findById(Number(req.auth.id));
     return res.status(200).json({
       ...userData,
       password: undefined,
@@ -168,14 +166,12 @@ export class AuthController {
   refresh = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const payload: JwtPayload = {
-        id: (req.auth as JwtPayload).id,
-        role: (req.auth as JwtPayload).role,
+        id: req.auth.id,
+        role: req.auth.role,
       };
 
       // get user data
-      const userData = await this.userService.findById(
-        Number((req.auth as JwtPayload).id),
-      );
+      const userData = await this.userService.findById(Number(req.auth.id));
       if (!userData) {
         const error = createHttpError(
           400,
@@ -185,9 +181,7 @@ export class AuthController {
         return;
       }
       // delete old refresh token from db
-      await this.tokenService.destroyRefreshToken(
-        Number((req.auth as JwtPayload).tokenId),
-      );
+      await this.tokenService.destroyRefreshToken(Number(req.auth.tokenId));
       // make a new record of refreshToken in db
       const refreshTokenRecord =
         await this.tokenService.persistRefreshToken(userData);
@@ -213,6 +207,24 @@ export class AuthController {
       });
 
       return res.status(200).json();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  logout = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      // delete refresh token
+      // please check this
+      await this.tokenService.destroyRefreshToken(Number(req.auth.tokenId));
+      this.logger.info("Refresh token has been deleted", {
+        id: req.auth.id,
+      });
+      this.logger.info("User has been logged out", { id: req.auth.id });
+
+      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken");
+      res.json();
     } catch (error) {
       next(error);
     }

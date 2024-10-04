@@ -21,7 +21,6 @@ const isRevokedCallback = async (
       // If there's no token or the payload isn't an object, it's revoked or invalid
       return true;
     }
-
     const payload = token.payload as JwtPayload; // Safely cast the payload to IPayload
     const refreshTokenRepository = AppDataSource.getRepository(RefreshToken);
     const refreshToken = await refreshTokenRepository.findOne({

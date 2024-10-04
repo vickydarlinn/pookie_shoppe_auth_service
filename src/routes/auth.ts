@@ -15,6 +15,7 @@ import { User } from "../entity/User";
 import { CredentialService } from "../services/CredentialService";
 import { authenticate } from "../middlewares/authenticate";
 import { validateRefreshToken } from "../middlewares/validateRefreshToken";
+import { parseRefreshToken } from "../middlewares/parseRefreshToken";
 
 const router = Router();
 
@@ -49,6 +50,13 @@ router.post(
   "/refresh",
   validateRefreshToken as RequestHandler,
   authController.refresh as unknown as RequestHandler,
+);
+
+router.post(
+  "/logout",
+  authenticate as RequestHandler,
+  parseRefreshToken as RequestHandler,
+  authController.logout as unknown as RequestHandler,
 );
 
 export default router;
