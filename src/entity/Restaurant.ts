@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 
 @Entity({ name: "restaurants" })
-export class Tenant {
+export class Restaurant {
   @PrimaryGeneratedColumn()
   id: number;
 

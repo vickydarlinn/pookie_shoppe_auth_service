@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Restaurant } from "./Restaurant";
 
 @Entity({ name: "users" })
 export class User {
@@ -19,4 +20,6 @@ export class User {
 
   @Column()
   role: string;
+  @ManyToOne(() => Restaurant)
+  restaurant: Restaurant | null;
 }
