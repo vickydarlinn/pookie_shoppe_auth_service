@@ -34,3 +34,12 @@ export type IPayload = {
   role: string;
   tokenId?: number;
 };
+
+export interface IRestaurant {
+  name: string;
+  address: string;
+}
+
+export interface CreateRestaurantRequest extends Request {
+  body: IRestaurant;
+}

@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { HttpError } from "http-errors";
 import logger from "./config/logger";
 import authRouter from "./routes/auth";
+import restaurantRouter from "./routes/restaurant";
 import path from "path";
 import cookieParser from "cookie-parser";
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 app.use("/auth", authRouter);
+app.use("/restaurants", restaurantRouter);
 
 app.get("/test", (req, res, next) => {
   try {
