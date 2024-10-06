@@ -7,6 +7,7 @@ import { UserService } from "../services/UserService";
 import { authenticate } from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constants";
+import createUserValidator from "../validators/createUserValidator";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.post(
   "/",
   authenticate as RequestHandler,
   canAccess([Roles.ADMIN]),
+  createUserValidator,
   userController.create as RequestHandler,
 );
 
