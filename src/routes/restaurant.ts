@@ -27,4 +27,11 @@ router.post(
   restaurantController.create as RequestHandler,
 );
 
+router.patch(
+  "/:id",
+  authenticate as RequestHandler,
+  canAccess([Roles.ADMIN]),
+  restaurantController.update as RequestHandler,
+);
+
 export default router;
