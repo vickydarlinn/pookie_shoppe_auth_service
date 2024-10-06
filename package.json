@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev nodemon src/server.ts",
+    "build": "tsc",
     "format:check": "npx prettier . --check",
     "format:fix": "npx prettier . --write",
     "lint": "eslint .",
