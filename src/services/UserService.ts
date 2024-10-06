@@ -6,7 +6,14 @@ import bcrypt from "bcrypt";
 
 export class UserService {
   constructor(private userRepository: Repository<User>) {}
-  async create({ firstName, lastName, email, password, role }: UserData) {
+  async create({
+    firstName,
+    lastName,
+    email,
+    password,
+    role,
+    tenantId,
+  }: UserData) {
     // const userRepository = AppDataSource.getRepository(User);
     // checking email is this exist in db or not?
     const isUserAlreadyExist = await this.userRepository.findOne({
@@ -25,6 +32,7 @@ export class UserService {
       email,
       password: hashedPassword,
       role,
+      tenant: tenantId ? { id: tenantId } : undefined,
     });
   }
 

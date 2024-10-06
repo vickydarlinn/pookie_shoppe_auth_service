@@ -22,7 +22,7 @@ describe("POST /restaurants", () => {
     jwks.start();
 
     adminToken = jwks.token({
-      sub: "1",
+      id: "1",
       role: Roles.ADMIN,
     });
   });
@@ -87,7 +87,7 @@ describe("POST /restaurants", () => {
 
     it("should return 403 if user is not an admin", async () => {
       const managerToken = jwks.token({
-        sub: "1",
+        id: "1",
         role: Roles.MANAGER,
       });
 

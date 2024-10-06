@@ -23,7 +23,7 @@ describe("patch /restaurants/:id", () => {
     jwks.start();
 
     adminToken = jwks.token({
-      sub: "1",
+      id: "1",
       role: Roles.ADMIN,
     });
 
@@ -101,7 +101,7 @@ describe("patch /restaurants/:id", () => {
 
     it("should return 403 if user is not an admin", async () => {
       const managerToken = jwks.token({
-        sub: "1",
+        id: "1",
         role: Roles.MANAGER,
       });
 

@@ -4,6 +4,7 @@ import { HttpError } from "http-errors";
 import logger from "./config/logger";
 import authRouter from "./routes/auth";
 import restaurantRouter from "./routes/restaurant";
+import userRouter from "./routes/user";
 import path from "path";
 import cookieParser from "cookie-parser";
 
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 });
 app.use("/auth", authRouter);
 app.use("/restaurants", restaurantRouter);
+app.use("/users", userRouter);
 
 app.get("/test", (req, res, next) => {
   try {
