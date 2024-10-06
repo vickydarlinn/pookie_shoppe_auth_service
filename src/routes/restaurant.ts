@@ -34,4 +34,20 @@ router.patch(
   restaurantController.update as RequestHandler,
 );
 
+router.delete(
+  "/:id",
+  authenticate as RequestHandler,
+  canAccess([Roles.ADMIN]),
+  restaurantController.delete as RequestHandler,
+);
+
+router.get("/", restaurantController.getAll as RequestHandler);
+
+router.get(
+  "/:id",
+  authenticate as RequestHandler,
+  canAccess([Roles.ADMIN]),
+  restaurantController.getOne as RequestHandler,
+);
+
 export default router;

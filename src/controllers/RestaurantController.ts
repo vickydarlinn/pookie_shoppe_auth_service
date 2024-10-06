@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import { validationResult } from "express-validator";
 import { CreateRestaurantRequest } from "../types";
 import { Logger } from "winston";
@@ -56,6 +56,56 @@ export class RestaurantController {
         address,
       });
       res.status(200).json();
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tenants = await this.restaurantService.getAll();
+
+      this.logger.info("All tenant have been fetched");
+      res.json(tenants);
+    } catch (err) {
+      next(err);
+    }
+  };
+  getOne = async (req: Request, res: Response, next: NextFunction) => {
+    const tenantId = req.params.id;
+
+    if (isNaN(Number(tenantId))) {
+      next(createHttpError(400, "Invalid url param."));
+      return;
+    }
+
+    try {
+      const tenant = await this.restaurantService.getById(Number(tenantId));
+
+      if (!tenant) {
+        next(createHttpError(404, "Tenant does not exist."));
+        return;
+      }
+
+      this.logger.info("Tenant has been fetched");
+      res.json(tenant);
+    } catch (err) {
+      next(err);
+    }
+  };
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const tenantId = req.params.id;
+      const deletedRestaurant = await this.restaurantService.deleteById(
+        Number(tenantId),
+      );
+      if (!deletedRestaurant) {
+        return next(createHttpError(400, "Invalid url param."));
+      }
+      this.logger.info("Tenant has been deleted", {
+        id: Number(tenantId),
+      });
+      res.json({ id: Number(tenantId) });
     } catch (error) {
       next(error);
     }
