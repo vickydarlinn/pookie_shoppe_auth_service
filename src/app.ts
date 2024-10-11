@@ -7,8 +7,17 @@ import restaurantRouter from "./routes/restaurant";
 import userRouter from "./routes/user";
 import path from "path";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import { Config } from "./config";
 
 const app = express();
+const ALLOWED_DOMAINS = [Config.CLIENT_UI_DOMAIN, Config.ADMIN_UI_DOMAIN];
+app.use(
+  cors({
+    origin: ALLOWED_DOMAINS as string[],
+    credentials: true,
+  }),
+);
 
 app.use(express.json());
 app.use(cookieParser());

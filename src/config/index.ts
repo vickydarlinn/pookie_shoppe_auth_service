@@ -6,6 +6,8 @@ config({
 });
 
 const {
+  CLIENT_UI_DOMAIN,
+  ADMIN_UI_DOMAIN,
   PORT,
   NODE_ENV,
   LOG_LEVEL,
@@ -29,4 +31,6 @@ export const Config = {
   DB_PASSWORD,
   REFRESH_TOKEN_SECRET,
   JWKS_URI,
+  CLIENT_UI_DOMAIN,
+  ADMIN_UI_DOMAIN,
 };
