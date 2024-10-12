@@ -98,7 +98,6 @@ export class UserController {
 
     try {
       const user = await this.userService.findById(Number(userId));
-
       if (!user) {
         this.logger.error("User does not exist while fetching specific", {
           userId,
@@ -119,7 +118,7 @@ export class UserController {
 
     try {
       const deletedUser = await this.userService.deleteById(Number(userId));
-      if (!deletedUser) {
+      if (!deletedUser.affected) {
         this.logger.error("User does not exist while deleting", { userId });
         next(createHttpError(404, "Invalid url param."));
         return;

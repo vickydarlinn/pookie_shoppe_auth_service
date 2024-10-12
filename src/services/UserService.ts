@@ -19,7 +19,6 @@ export class UserService {
     const isUserAlreadyExist = await this.userRepository.findOne({
       where: { email: email },
     });
-
     if (isUserAlreadyExist) {
       throw createHttpError(400, "Email is already exists!");
     }
@@ -43,11 +42,21 @@ export class UserService {
       },
     });
   }
+  async findByEmailWithPass(email: string) {
+    return await this.userRepository
+      .createQueryBuilder("user")
+      .where("user.email = :email", { email })
+      .addSelect("user.password") // Explicitly include the password field
+      .getOne();
+  }
+
   async findById(id: number) {
     return await this.userRepository.findOne({
       where: {
         id,
       },
+
+      relations: ["restaurant"], // Include the 'restaurant' relation
     });
   }
   async update(userId: number, { firstName, lastName, role }: LimitedUserData) {
@@ -66,7 +75,9 @@ export class UserService {
     }
   }
   async getAll() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      relations: ["restaurant"], // Include the 'restaurant' relation
+    });
   }
   async deleteById(userId: number) {
     return await this.userRepository.delete(userId);

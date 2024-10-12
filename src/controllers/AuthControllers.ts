@@ -101,7 +101,7 @@ export class AuthController {
       });
 
       // here you will check the password of the user
-      const user = await this.userService.findByEmail(email);
+      const user = await this.userService.findByEmailWithPass(email);
       if (!user) {
         const error = createHttpError(401, "Email or password is wrong");
         next(error);

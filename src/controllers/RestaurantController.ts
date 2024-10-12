@@ -45,6 +45,7 @@ export class RestaurantController {
       const isRestaurantExist = await this.restaurantService.getById(
         Number(restaurantId),
       );
+
       if (!isRestaurantExist) {
         const err = createHttpError(404, "Restaurant does not exit");
         this.logger.error("Restaurant does not exit", { id: restaurantId });
@@ -101,7 +102,7 @@ export class RestaurantController {
       const deletedRestaurant = await this.restaurantService.deleteById(
         Number(restaurantId),
       );
-      if (!deletedRestaurant) {
+      if (!deletedRestaurant.affected) {
         return next(createHttpError(400, "Invalid url param."));
       }
       this.logger.info("restaurant has been deleted", {

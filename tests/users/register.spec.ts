@@ -119,7 +119,11 @@ describe("POST /auth/register", () => {
       await request(app).post("/auth/register").send(userData);
       //Assert
       const userRepository = connection.getRepository(User);
-      const users = await userRepository.find();
+      // const users = await userRepository.find();
+      const users = await userRepository
+        .createQueryBuilder("user")
+        .addSelect("user.password")
+        .getMany();
 
       expect(users[0].password).not.toBe(userData.password);
       expect(users[0].password).toHaveLength(60);

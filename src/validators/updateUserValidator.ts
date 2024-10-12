@@ -1,4 +1,5 @@
 import { checkSchema } from "express-validator";
+import { Roles } from "../constants";
 
 export default checkSchema({
   firstName: {
@@ -15,5 +16,10 @@ export default checkSchema({
     errorMessage: "Role is required!",
     notEmpty: true,
     trim: true,
+    isIn: {
+      // options: Object.values(Roles),
+      options: [Object.values(Roles)],
+      errorMessage: "Role must be one of: admin, manager, customer",
+    },
   },
 });
