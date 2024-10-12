@@ -12,7 +12,7 @@ export class UserService {
     email,
     password,
     role,
-    tenantId,
+    restaurantId,
   }: UserData) {
     // const userRepository = AppDataSource.getRepository(User);
     // checking email is this exist in db or not?
@@ -32,7 +32,7 @@ export class UserService {
       email,
       password: hashedPassword,
       role,
-      tenant: tenantId ? { id: tenantId } : undefined,
+      restaurant: restaurantId ? { id: restaurantId } : undefined,
     });
   }
 

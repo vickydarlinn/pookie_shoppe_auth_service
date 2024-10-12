@@ -25,7 +25,7 @@ export class RestaurantController {
       this.logger.debug("Request for creating a restaurant", req.body);
 
       const restaurant = await this.restaurantService.create({ name, address });
-      this.logger.info("Tenant has been created", { id: restaurant.id });
+      this.logger.info("restaurant has been created", { id: restaurant.id });
 
       res.status(201).json({ id: restaurant.id });
     } catch (error) {
@@ -40,18 +40,18 @@ export class RestaurantController {
   ) => {
     try {
       const { name, address } = req.body;
-      const tenantId = req.params.id;
+      const restaurantId = req.params.id;
 
       const isRestaurantExist = await this.restaurantService.getById(
-        Number(tenantId),
+        Number(restaurantId),
       );
       if (!isRestaurantExist) {
         const err = createHttpError(404, "Restaurant does not exit");
-        this.logger.error("Restaurant does not exit", { id: tenantId });
+        this.logger.error("Restaurant does not exit", { id: restaurantId });
         return next(err);
       }
 
-      await this.restaurantService.update(Number(tenantId), {
+      await this.restaurantService.update(Number(restaurantId), {
         name,
         address,
       });
@@ -63,49 +63,51 @@ export class RestaurantController {
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tenants = await this.restaurantService.getAll();
+      const restaurants = await this.restaurantService.getAll();
 
-      this.logger.info("All tenant have been fetched");
-      res.json(tenants);
+      this.logger.info("All restaurant have been fetched");
+      res.json(restaurants);
     } catch (err) {
       next(err);
     }
   };
   getOne = async (req: Request, res: Response, next: NextFunction) => {
-    const tenantId = req.params.id;
+    const restaurantId = req.params.id;
 
-    if (isNaN(Number(tenantId))) {
+    if (isNaN(Number(restaurantId))) {
       next(createHttpError(400, "Invalid url param."));
       return;
     }
 
     try {
-      const tenant = await this.restaurantService.getById(Number(tenantId));
+      const restaurant = await this.restaurantService.getById(
+        Number(restaurantId),
+      );
 
-      if (!tenant) {
-        next(createHttpError(404, "Tenant does not exist."));
+      if (!restaurant) {
+        next(createHttpError(404, "restaurant does not exist."));
         return;
       }
 
-      this.logger.info("Tenant has been fetched");
-      res.json(tenant);
+      this.logger.info("restaurant has been fetched");
+      res.json(restaurant);
     } catch (err) {
       next(err);
     }
   };
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tenantId = req.params.id;
+      const restaurantId = req.params.id;
       const deletedRestaurant = await this.restaurantService.deleteById(
-        Number(tenantId),
+        Number(restaurantId),
       );
       if (!deletedRestaurant) {
         return next(createHttpError(400, "Invalid url param."));
       }
-      this.logger.info("Tenant has been deleted", {
-        id: Number(tenantId),
+      this.logger.info("restaurant has been deleted", {
+        id: Number(restaurantId),
       });
-      res.json({ id: Number(tenantId) });
+      res.json({ id: Number(restaurantId) });
     } catch (error) {
       next(error);
     }

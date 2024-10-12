@@ -50,7 +50,7 @@ describe("POST /users", () => {
         lastName: "sangwan",
         email: "uttapalsangwan@gmail.com",
         password: "password",
-        tenantId: restaurant.id,
+        restaurantId: restaurant.id,
         role: Roles.MANAGER,
       };
 
@@ -84,7 +84,7 @@ describe("POST /users", () => {
         lastName: "sangwan",
         email: "uttapalsangwan@gmail.com",
         password: "password",
-        tenantId: restaurant.id,
+        restaurantId: restaurant.id,
         role: Roles.MANAGER,
       };
 
@@ -101,8 +101,8 @@ describe("POST /users", () => {
     });
 
     it("should return 403 if non admin user tries to create a user", async () => {
-      // Create tenant first
-      const tenant = await createRestaurant(
+      // Create restaurant first
+      const restaurant = await createRestaurant(
         connection.getRepository(Restaurant),
       );
 
@@ -116,7 +116,7 @@ describe("POST /users", () => {
         lastName: "sangwan",
         email: "uttapalsangwan@gmail.com",
         password: "password",
-        tenantId: tenant.id,
+        restaurantId: restaurant.id,
       };
 
       // Add token to cookie
