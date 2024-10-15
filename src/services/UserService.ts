@@ -77,6 +77,9 @@ export class UserService {
   async getAll() {
     return await this.userRepository.find({
       relations: ["restaurant"], // Include the 'restaurant' relation
+      order: {
+        createdAt: "DESC", // Change 'id' to the field you want to order by
+      },
     });
   }
   async deleteById(userId: number) {
