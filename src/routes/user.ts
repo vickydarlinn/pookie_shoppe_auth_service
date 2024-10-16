@@ -9,6 +9,7 @@ import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constants";
 import createUserValidator from "../validators/createUserValidator";
 import updateUserValidator from "../validators/updateUserValidator";
+import getAllUsersValidator from "../validators/getAllUsersValidator";
 
 const router = Router();
 
@@ -37,6 +38,7 @@ router.get(
   "/",
   authenticate as RequestHandler,
   canAccess([Roles.ADMIN]),
+  getAllUsersValidator,
   userController.getAll as RequestHandler,
 );
 

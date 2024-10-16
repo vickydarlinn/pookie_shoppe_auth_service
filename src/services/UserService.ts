@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { User } from "../entity/User";
-import { LimitedUserData, UserData } from "../types";
+import { LimitedUserData, UserData, UserQueryParams } from "../types";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 
@@ -14,8 +14,6 @@ export class UserService {
     role,
     restaurantId,
   }: UserData) {
-    // const userRepository = AppDataSource.getRepository(User);
-    // checking email is this exist in db or not?
     const isUserAlreadyExist = await this.userRepository.findOne({
       where: { email: email },
     });
@@ -74,13 +72,35 @@ export class UserService {
       throw error;
     }
   }
-  async getAll() {
-    return await this.userRepository.find({
-      relations: ["restaurant"], // Include the 'restaurant' relation
-      order: {
-        createdAt: "DESC", // Change 'id' to the field you want to order by
-      },
-    });
+  async getAll({ items = 5, page = 1, q, role }: UserQueryParams) {
+    const queryBuilder = this.userRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.restaurant", "restaurant") // Join the restaurant relation
+      .orderBy("user.createdAt", "DESC"); // Order users by createdAt field
+
+    // Apply search filter if 'q' is provided
+    if (q) {
+      queryBuilder.andWhere(
+        "(user.firstName ILIKE :q OR user.lastName ILIKE :q OR user.email ILIKE :q)",
+        { q: `%${q}%` },
+      );
+    }
+    // Apply role filter if 'role' is provided
+    if (role) {
+      queryBuilder.andWhere("user.role = :role", { role });
+    }
+
+    // Apply pagination
+    queryBuilder.skip((page - 1) * items).take(items);
+
+    // Execute query and get results
+    const [users, total] = await queryBuilder.getManyAndCount();
+    return {
+      data: users,
+      total,
+      page,
+      items,
+    };
   }
   async deleteById(userId: number) {
     return await this.userRepository.delete(userId);

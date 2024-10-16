@@ -8,6 +8,7 @@ import { AppDataSource } from "../config/data-source";
 import { authenticate } from "../middlewares/authenticate";
 import { canAccess } from "../middlewares/canAccess";
 import { Roles } from "../constants";
+import getAllRestaurantsValidator from "../validators/getAllRestaurantsValidator";
 
 const router = Router();
 
@@ -41,7 +42,12 @@ router.delete(
   restaurantController.delete as RequestHandler,
 );
 
-router.get("/", restaurantController.getAll as RequestHandler);
+router.get(
+  "/",
+
+  getAllRestaurantsValidator,
+  restaurantController.getAll as RequestHandler,
+);
 
 router.get(
   "/:id",

@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
-import { validationResult } from "express-validator";
-import { CreateRestaurantRequest } from "../types";
+import { matchedData, validationResult } from "express-validator";
+import { CreateRestaurantRequest, RestaurantQueryParams } from "../types";
 import { Logger } from "winston";
 import { RestaurantService } from "../services/RestaurantService";
 import createHttpError from "http-errors";
@@ -64,9 +64,13 @@ export class RestaurantController {
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const restaurants = await this.restaurantService.getAll();
+      const validatedQuery = matchedData(req, { onlyValidData: true });
 
-      this.logger.info("All restaurant have been fetched");
+      const restaurants = await this.restaurantService.getAll(
+        validatedQuery as RestaurantQueryParams,
+      );
+
+      this.logger.info("All restaurants have been fetched");
       res.json(restaurants);
     } catch (err) {
       next(err);

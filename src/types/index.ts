@@ -13,6 +13,13 @@ export interface RegisterUserRequest extends Request {
   body: UserData;
 }
 
+export interface UserQueryParams {
+  items: number;
+  page: number;
+  q: string;
+  role: string;
+}
+
 export interface LoginData {
   email: string;
   password: string;
@@ -39,6 +46,12 @@ export type IPayload = {
 export interface IRestaurant {
   name: string;
   address: string;
+}
+
+export interface RestaurantQueryParams {
+  q: string;
+  items: number;
+  page: number;
 }
 
 export interface CreateRestaurantRequest extends Request {
