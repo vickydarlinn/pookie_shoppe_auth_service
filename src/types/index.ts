@@ -65,7 +65,6 @@ export interface CreateUserRequest extends Request {
 export interface LimitedUserData {
   firstName: string;
   lastName: string;
-  role: string;
 }
 
 export interface UpdateUserRequest extends Request {

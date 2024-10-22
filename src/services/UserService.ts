@@ -57,12 +57,11 @@ export class UserService {
       relations: ["restaurant"], // Include the 'restaurant' relation
     });
   }
-  async update(userId: number, { firstName, lastName, role }: LimitedUserData) {
+  async update(userId: number, { firstName, lastName }: LimitedUserData) {
     try {
       return await this.userRepository.update(userId, {
         firstName,
         lastName,
-        role,
       });
     } catch (err) {
       const error = createHttpError(

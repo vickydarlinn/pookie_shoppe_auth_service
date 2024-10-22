@@ -55,7 +55,7 @@ export class UserController {
       return res.status(400).json({ errors: result.array() });
     }
 
-    const { firstName, lastName, role } = req.body;
+    const { firstName, lastName } = req.body;
     const userId = req.params.id;
 
     const isUserExist = await this.userService.findById(Number(userId));
@@ -71,7 +71,6 @@ export class UserController {
       await this.userService.update(Number(userId), {
         firstName,
         lastName,
-        role,
       });
 
       this.logger.info("User has been updated", { id: userId });
