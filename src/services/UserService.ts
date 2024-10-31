@@ -20,6 +20,12 @@ export class UserService {
     if (isUserAlreadyExist) {
       throw createHttpError(400, "Email is already exists!");
     }
+    if (restaurantId && role !== "manager") {
+      throw createHttpError(
+        403,
+        "Only users with the 'manager' role can be assigned a restaurant.",
+      );
+    }
     // hash the password
     const saltRound = 10;
     const hashedPassword = await bcrypt.hash(password, saltRound);
@@ -29,7 +35,8 @@ export class UserService {
       email,
       password: hashedPassword,
       role,
-      restaurant: restaurantId ? { id: restaurantId } : undefined,
+      restaurant:
+        role === "manager" && restaurantId ? { id: restaurantId } : undefined,
     });
   }
 
