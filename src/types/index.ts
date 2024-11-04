@@ -41,6 +41,7 @@ export type IPayload = {
   id: string;
   role: string;
   tokenId?: number;
+  restaurantId?: string;
 };
 
 export interface IRestaurant {

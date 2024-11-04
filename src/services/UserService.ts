@@ -50,6 +50,7 @@ export class UserService {
   async findByEmailWithPass(email: string) {
     return await this.userRepository
       .createQueryBuilder("user")
+      .leftJoinAndSelect("user.restaurant", "restaurant")
       .where("user.email = :email", { email })
       .addSelect("user.password") // Explicitly include the password field
       .getOne();

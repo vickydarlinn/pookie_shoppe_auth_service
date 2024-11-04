@@ -117,10 +117,12 @@ export class AuthController {
         next(error);
         return;
       }
-
       const payload: JwtPayload = {
         id: String(user.id),
         role: user.role,
+        ...(user.role === Roles.MANAGER && {
+          restaurantId: String(user.restaurant?.id),
+        }),
       };
       // make accessToken
       const accessToken = this.tokenService.generateAccessToken(payload);
@@ -168,6 +170,7 @@ export class AuthController {
       const payload: JwtPayload = {
         id: req.auth.id,
         role: req.auth.role,
+        restaurantId: req.auth?.restaurantId,
       };
 
       // get user data
